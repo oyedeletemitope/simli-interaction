@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useRef, useState } from "react";
 import { RealtimeClient } from "@openai/realtime-api-beta";
 import { SimliClient } from "simli-client";
 import VideoBox from "./Components/VideoBox";
-import IconExit from "@/media/IconExit";
+import IconExit from "@/app/Components/IconExit";
 
 interface SimliOpenAIPushToTalkProps {
   simli_faceid: string;
