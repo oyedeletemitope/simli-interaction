@@ -2,9 +2,7 @@ import React, { useCallback, useEffect, useRef, useState } from "react";
 import { RealtimeClient } from "@openai/realtime-api-beta";
 import { SimliClient } from "simli-client";
 import VideoBox from "./Components/VideoBox";
-import cn from "./utils/TailwindMergeAndClsx";
 import IconExit from "@/media/IconExit";
-import IconSparkleLoader from "@/media/IconSparkleLoader";
 
 interface SimliOpenAIPushToTalkProps {
   simli_faceid: string;
@@ -12,7 +10,7 @@ interface SimliOpenAIPushToTalkProps {
   initialPrompt: string;
   onStart: () => void;
   onClose: () => void;
-  showDottedFace: boolean;
+  //showDottedFace: boolean;
 }
 
 const simliClient = new SimliClient();
@@ -23,7 +21,6 @@ const SimliOpenAIPushToTalk: React.FC<SimliOpenAIPushToTalkProps> = ({
   initialPrompt,
   onStart,
   onClose,
-  showDottedFace,
 }) => {
   // State management
   const [isLoading, setIsLoading] = useState(false);
@@ -90,7 +87,6 @@ const SimliOpenAIPushToTalk: React.FC<SimliOpenAIPushToTalkProps> = ({
         "input_audio_buffer.speech_stopped",
         handleSpeechStopped
       );
-      // openAIClientRef.current.on('response.canceled', handleResponseCanceled);
 
       await openAIClientRef.current.connect();
       console.log("OpenAI Client connected successfully");
@@ -265,6 +261,9 @@ const SimliOpenAIPushToTalk: React.FC<SimliOpenAIPushToTalkProps> = ({
   /**
    * Handles stopping the interaction, cleaning up resources and resetting states.
    */
+  /**
+   * Handles stopping the interaction, cleaning up resources and resetting states.
+   */
   const handleStop = useCallback(() => {
     console.log("Stopping interaction...");
     setIsLoading(false);
@@ -278,6 +277,9 @@ const SimliOpenAIPushToTalk: React.FC<SimliOpenAIPushToTalkProps> = ({
     stopRecording();
     onClose();
     console.log("Interaction stopped");
+
+    // Refresh the page
+    window.location.reload();
   }, [stopRecording]);
 
   // Push-to-talk button handlers
@@ -350,11 +352,7 @@ const SimliOpenAIPushToTalk: React.FC<SimliOpenAIPushToTalkProps> = ({
 
   return (
     <>
-      <div
-        className={`transition-all duration-300 ${
-          showDottedFace ? "h-0 overflow-hidden" : "h-auto"
-        }`}
-      >
+      <div className="transition-all duration-300 ">
         <VideoBox video={videoRef} audio={audioRef} />
       </div>
       <div className="flex flex-col items-center">
@@ -362,13 +360,10 @@ const SimliOpenAIPushToTalk: React.FC<SimliOpenAIPushToTalkProps> = ({
           <button
             onClick={handleStart}
             disabled={isLoading}
-            className={cn(
-              "w-full h-[52px] mt-4 disabled:bg-[#343434] disabled:text-white disabled:hover:rounded-[100px] bg-simliblue text-white py-3 px-6 rounded-[100px] transition-all duration-300 hover:text-black hover:bg-white hover:rounded-sm",
-              "flex justify-center items-center"
-            )}
+            className="w-full h-[52px] mt-4 disabled:bg-gray-600 disabled:text-white disabled:hover:rounded-full bg-green-500 text-white py-3 px-6 rounded-full transition-all duration-300 hover:text-black hover:bg-white hover:rounded flex justify-center items-center"
           >
             {isLoading ? (
-              <IconSparkleLoader className="h-[20px] animate-loader" />
+              <span>Loading...</span>
             ) : (
               <span className="font-abc-repro-mono font-bold w-[164px]">
                 Test Interaction
@@ -385,10 +380,9 @@ const SimliOpenAIPushToTalk: React.FC<SimliOpenAIPushToTalkProps> = ({
                 onTouchEnd={handlePushToTalkEnd}
                 onMouseLeave={handlePushToTalkEnd}
                 disabled={isButtonDisabled}
-                className={cn(
-                  "mt-4 text-white flex-grow bg-simliblue hover:rounded-sm hover:bg-opacity-70 h-[52px] px-6 rounded-[100px] transition-all duration-300",
-                  isRecording && "bg-[#1B1B1B] rounded-sm hover:bg-opacity-100"
-                )}
+                className={`mt-4 text-white flex-grow bg-green-500 hover:rounded hover:bg-opacity-70 h-[52px] px-6 rounded-full transition-all duration-300 ${
+                  isRecording ? "bg-gray-900 rounded hover:bg-opacity-100" : ""
+                }`}
               >
                 <span className="font-abc-repro-mono font-bold w-[164px]">
                   {isRecording ? "Release to Stop" : "Push & hold to talk"}
